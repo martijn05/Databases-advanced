@@ -1,116 +1,84 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[14]:
-
-
 from bs4 import BeautifulSoup
+import time
 import numpy as np
 import pandas as pd
 import re
 import requests
 
 
-# In[15]:
+while(True):
+    url = "https://www.blockchain.com/btc/unconfirmed-transactions"
+    r = requests.get(url)
 
+    bit = []
+    USD = []
+    Time = []
+    Hash = []
 
-url = "https://www.blockchain.com/btc/unconfirmed-transactions"
-r = requests.get(url)
+    c = r.content
+    soup = BeautifulSoup(c)
 
+    for link in soup.find_all("div",class_= "sc-1au2w4e-0 emaUuf" ):
+        tijd = re.sub("Time","",link.getText())
+        Time.append(tijd)
 
-# In[16]:
+        
+        
+        
+    count = 0
+    for link in soup.find_all("div",class_= "sc-1au2w4e-0 fTyXWG" ):
+        BTC = re.sub(r"\(BTC\)||\(USD\)||(Amount)","",link.getText())
+        BTC = BTC.split("BTC")
 
 
-results = []
-Time = []
-Hash = []
+        if(int(count) >= 2):
 
+            if(count % 2 == 0):
+                bit.append(BTC[0])
+                count = count+1
+            else:
+                USD.append(BTC[0])
+                count = count+1
+        else:
+            count = count+1
 
-# In[17]:
 
 
-c = r.content
-soup = BeautifulSoup(c)
+    for link in soup.find_all("div",class_= "sc-1au2w4e-0 bTgHwk" ):
+        has = re.sub("Hash","",link.getText())
+        Hash.append(has)
 
 
-# In[18]:
+    results = []
 
+    for i in range(0,30):
+        
+        if(i >= 1):
+            results.append(Time[i])
+            results.append(Hash[i])
+            results.append(bit[i -1])
+            results.append(USD[i-1])
 
 
-for link in soup.find_all("div",class_= "sc-1au2w4e-0 emaUuf" ):
-    Time.append(link.getText())
+    listall = []
+    listdf = []
+    timer = 0
 
-    strtime = "{}".format(Time)
+    for i in range(len(results)):
+        listall.append(results[i])
+        timer = timer + 1
+        if(timer==4):
+            listdf.append(listall)
+            listall = []
+            timer = 0
 
-    x = re.sub("Time", "", strtime)
-    
-    x = "{}".format(x)
 
-    print(x)
 
+    BTC_DF = pd.DataFrame(listdf, columns = ['Time', 'Hash', 'BTC', 'USD'])
+    BTC_DF = BTC_DF.astype({ 'Time': str,'Hash': str, 'BTC': float, 'USD': str})
 
-# In[19]:
+    BTC_DF= BTC_DF.sort_values(by=["BTC"], ascending=False, ignore_index=True)
 
+    print(BTC_DF[0:5])
 
-for link in soup.find_all("div",class_= "sc-1au2w4e-0 fTyXWG" ):
-    print(link.getText())
-    
-
-
-# In[20]:
-
-
-for link in soup.find_all("div",class_= "sc-1au2w4e-0 bTgHwk" ):
-    Hash.append(link.getText())
-
-strhash = "{}".format(Hash)
-    
-y = re.sub("Hash", "", strhash)
-
-y = "{}".format(y)
-
-print(y)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[10]:
-
-
-BTC_DF = pd.DataFrame(results, columns = ['Hash', 'Time'])
-BTC_DF = BTC_DF.astype([{'Hash': str, 'Time': str}])
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
+    time.sleep(5)
