@@ -4,9 +4,15 @@ import numpy as np
 import pandas as pd
 import re
 import requests
+import pymongo as mongo
 
 
 while(True):
+    
+    client = mongo.MongoClient("mongodb://127.0.0.1:27017")
+
+    blockchain_db = client["blockchain"]
+
     url = "https://www.blockchain.com/btc/unconfirmed-transactions"
     r = requests.get(url)
 
@@ -79,6 +85,13 @@ while(True):
 
     BTC_DF= BTC_DF.sort_values(by=["BTC"], ascending=False, ignore_index=True)
 
+    json = BTC_DF[0:5].to_dict("lines")
+
     print(BTC_DF[0:5])
 
-    time.sleep(5)
+    col_Time = blockchain_db["blockchain"]
+    
+
+    y = col_Time.insert_one(json)
+
+    time.sleep(60)
