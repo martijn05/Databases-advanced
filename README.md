@@ -17,4 +17,4 @@ Wat heb ik gebruikt om deze opdracht te maken:
 - time
 - pymongo
 
-mongoDB runt via docker op localhost:27017
+mongoDB runt via docker op localhost:8080
