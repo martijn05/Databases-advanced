@@ -7,7 +7,7 @@ import requests
 import pymongo as mongo
 
 
-client = mongo.MongoClient("mongodb://127.0.0.1:27017")
+client = mongo.MongoClient("mongodb://127.0.0.1:8080")
 
 
 
