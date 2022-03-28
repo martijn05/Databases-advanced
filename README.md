@@ -17,4 +17,7 @@ Wat heb ik gebruikt om deze opdracht te maken:
 - time
 - pymongo
 
+om de mongoDB te laten werken moet je docker downloaden en de poort als localhost:8080 instellen.
+als je de scraper runt doet hij alles vanzelf, hij gaat elke minuut scrapen
+
 mongoDB runt via docker op localhost:8080
