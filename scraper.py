@@ -7,9 +7,13 @@ import requests
 import pymongo as mongo
 
 
+client = mongo.MongoClient("mongodb://127.0.0.1:27017")
+
+
+
 while(True):
     
-    client = mongo.MongoClient("mongodb://127.0.0.1:27017")
+    
 
     blockchain_db = client["blockchain"]
 
@@ -88,6 +92,8 @@ while(True):
     json = BTC_DF[0:5].to_dict("lines")
 
     print(BTC_DF[0:5])
+
+
 
     col_Time = blockchain_db["blockchain"]
     
